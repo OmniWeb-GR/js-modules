@@ -1,0 +1,12 @@
+export function determineScreenOrientation(addToBodyClassList) {
+    let orientation;
+    if (document.body.clientHeight > document.body.clientWidth) {
+        orientation =  'portrait';
+    } else {
+        orientation =  'landscape';
+    }
+    if (addToBodyClassList) {
+        document.body.classList.add (orientation);
+    }
+    return orientation;
+}
