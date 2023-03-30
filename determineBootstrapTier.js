@@ -1,25 +1,34 @@
-export (function determineBootstrapTier(resultType) {
-    let documentWidth = document.body.clientWidth;
-    if (documentWidth < parseInt(getComputedStyle(document.documentElement).getPropertyValue('--bs-breakpoint-sm').replace('px', ''))) {
-        return resultType == 'number' ? 0 : 'xs';
+export function determineBootstrapTier(returnNumber) {
+    function main() {
+        const tiers = ['xs', 'sm', 'md', 'lg', 'xl', 'xxl'];
+        let documentWidth = document.body.clientWidth, tierIndex;
+        let returnNumber; // remove after testing
+        tiers.forEach(function(tier, index) {
+            if (!returnNumber) {
+                document.body.classList.remove(tiers[index]);
+            }
+            if (documentWidth < parseInt(getComputedStyle(document.documentElement).getPropertyValue('--bs-breakpoint-' + tiers[index + 1]).replace('px', ''))) {
+                tierIndex = index;
+            }
+            if ((index - 1) == tiers.length) {
+                if (documentWidth >= parseInt(getComputedStyle(document.documentElement).getPropertyValue('--bs-breakpoint-' + tiers[index + 1]).replace('px', ''))) {
+                    tierIndex = index;
+                }
+            }
+        });
+        if (typeof tierIndex !== "undefined") {
+            document.body.classList.add(tiers[tierIndex]);
+            if (typeof returnNumber === "undefined") {
+                return tiers[tierIndex];
+            }
+            else {
+                return tierIndex;
+            }
+        }
+        else {
+            console.log('Unable to determine Bootstrap tiers.');
+        }
     }
-    else if (documentWidth < parseInt(getComputedStyle(document.documentElement).getPropertyValue('--bs-breakpoint-md').replace('px', ''))) {
-        return resultType == 'number' ? 1 : 'sm';
-    }
-    else if (documentWidth < parseInt(getComputedStyle(document.documentElement).getPropertyValue('--bs-breakpoint-lg').replace('px', ''))) {
-        return resultType == 'number' ? 2 : 'md';
-    }
-    else if (documentWidth < parseInt(getComputedStyle(document.documentElement).getPropertyValue('--bs-breakpoint-xl').replace('px', ''))) {
-        return resultType == 'number' ? 3 : 'lg';
-    }
-    else if (documentWidth < parseInt(getComputedStyle(document.documentElement).getPropertyValue('--bs-breakpoint-xxl').replace('px', ''))) {
-        return resultType == 'number' ? 4 : 'xl';
-    }
-    else if (documentWidth >= parseInt(getComputedStyle(document.documentElement).getPropertyValue('--bs-breakpoint-xxl').replace('px', ''))) {
-        return resultType == 'number' ? 5 : 'xxl';
-    }
-    else {
-        console.log('Unable to determine Bootstrap tiers.');
-        return;
-    }
-})();
+    main();
+    window.onresize = main;
+}
